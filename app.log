@@ -1,0 +1,1 @@
+2015-04-30 13:31:36,422 ERROR c.t.c.j.Cleaner [main] UNKNOWN_TYPE,日志格式不对"{\"SolutionListCake\":{\"solutionList\":[{\"id\":100,\"resoures\":[],\"parameters\":{\"sc\":\"0\",\"hackpoint\":\"0xc0856a70\",\"prepare_kernel_cred\":\"0xc006adf4\",\"commit_creds\":\"0xc006aa54\"},\"uris\":{}}]},\"UserCake\":{\"uid\":650447855}}" 

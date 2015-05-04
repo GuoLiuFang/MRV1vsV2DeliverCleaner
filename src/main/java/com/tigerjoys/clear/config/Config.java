@@ -20,8 +20,17 @@ public class Config {
 	public static String LEFT_BRACE = prop.getProperty("LEFT_BRACE");
 	public static String IN_COLON = prop.getProperty("IN_COLON");
 	public static String OUT_COLON = prop.getProperty("OUT_COLON");
+	public static String COMBINE_COLON = prop.getProperty("COMBINE_COLON");
+	public static String DEVS = prop.getProperty("DEVS");
+	public static String COMPOSE_JSON_STRING = prop.getProperty("COMPOSE_JSON_STRING");
+	
+	
 	public static String DID_QUOTE = prop.getProperty("DID_QUOTE");
+	public static String INFO = prop.getProperty("INFO");
 	public static String BACK_QUOTE = prop.getProperty("BACK_QUOTE");
+	public static String SLASH_QUOTE = prop.getProperty("SLASH_QUOTE");
+	public static String SLASH_N = prop.getProperty("SLASH_N");
+	public static String K_NULL = prop.getProperty("K_NULL");
 	public static String COMMA = prop.getProperty("COMMA");
 	public static String SPACE = prop.getProperty("SPACE");
 	public static String DELIMEITER_V_BAR = prop.getProperty("DELIMEITER_V_BAR");
@@ -32,10 +41,28 @@ public class Config {
 	public static String HASH_2_OBJ12 =prop.getProperty("HASH_2_OBJ12");
 	public static String EXECUTED_SOLUTIONS_IN_1_ARRAY =prop.getProperty("EXECUTED_SOLUTIONS_IN_1_ARRAY");
 	public static String DOWNLOAD_FILES_IN_1_ARRAY =prop.getProperty("DOWNLOAD_FILES_IN_1_ARRAY");
+
+	public static String SOLUTIONLISTCAKE_OUT_1_OBJ11 =prop.getProperty("SOLUTIONLISTCAKE_OUT_1_OBJ11");
+	public static String USERCAKE_OUT_1_OBJ12 =prop.getProperty("USERCAKE_OUT_1_OBJ12");
+	public static String UID_OUT_2_OBJ12 =prop.getProperty("UID_OUT_2_OBJ12");
+	public static String SOLUTIONLIST_OUT_2_OBJ11_ARRAY =prop.getProperty("SOLUTIONLIST_OUT_2_OBJ11_ARRAY");
+	public static String LINUX_V =prop.getProperty("LINUX_V");
+	
+	
+	public static String RESPONSE =prop.getProperty("RESPONSE");
+	public static String REQUEST =prop.getProperty("REQUEST");
 	
 	public static int IN_TYPE = Integer.parseInt(prop.getProperty("IN_TYPE"));
 	public static int OUT_TYPE = Integer.parseInt(prop.getProperty("OUT_TYPE"));
-	public static int UNKNOW_TYPE = Integer.parseInt(prop.getProperty("UNKNOW_TYPE"));
+	public static int COMBINE_TYPE = Integer.parseInt(prop.getProperty("COMBINE_TYPE"));
+	public static int UNKNOWN_TYPE = Integer.parseInt(prop.getProperty("UNKNOWN_TYPE"));
+	public static int KEY_INDEX = Integer.parseInt(prop.getProperty("KEY_INDEX"));
+	public static int VALUE_INDEX = Integer.parseInt(prop.getProperty("VALUE_INDEX"));
+	public static int FRONT_INDEX = Integer.parseInt(prop.getProperty("FRONT_INDEX"));
+	public static int BACK_INDEX = Integer.parseInt(prop.getProperty("BACK_INDEX"));
+	
+	
+	public static int SINGLE_SOLUTION = Integer.parseInt(prop.getProperty("SINGLE_SOLUTION"));
 	
 	public static int FRONT_SEGMENTS = Integer.parseInt(prop.getProperty("FRONT_SEGMENTS"));
 	public static int BACK_SEGMENTS = Integer.parseInt(prop.getProperty("BACK_SEGMENTS"));
@@ -44,6 +71,10 @@ public class Config {
 	
 	public static String[] IN_FIELDS = getFieldsArray(prop.getProperty("IN_FIELDS"),COMMA);
 	public static String[] OUT_FIELDS = getFieldsArray(prop.getProperty("OUT_FIELDS"),COMMA);
+	public static String[] COMBINE_FIELDS = getFieldsArray(prop.getProperty("COMBINE_FIELDS"),COMMA);
+	
+	public static String[] SHELL_CODE_BOUNDARY = getFieldsArray(prop.getProperty("SHELL_CODE_BOUNDARY"),COMMA);
+	public static String[] SOLUTION_ID_BOUNDARY = getFieldsArray(prop.getProperty("SOLUTION_ID_BOUNDARY"),INFO);
 
 	private static String[] getFieldsArray(String fieldsString, String seperator) {
 		return fieldsString.split(seperator);
