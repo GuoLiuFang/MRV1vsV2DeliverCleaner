@@ -1,5 +1,8 @@
 package com.tigerjoys.clear.job;
 
+import javax.naming.spi.DirStateFactory.Result;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,13 +85,15 @@ public class Cleaner {
 					field_value = response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
 				}
 			} else if (field.equals(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY)) {
+				String  solutionList = "NULL";
 				if (objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY))) {
-					String  solutionList = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
-					field_value = getSidAndSC(solutionList);
+					solutionList = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
 				}
+				field_value = getSidAndSC(solutionList);
 			} else if (field.equals(Config.LINUX_V)) {
 				if (objIsNull(request_json.getAsJsonObject().get(Config.LINUX_V))) {
-					field_value = request_json.getAsJsonObject().get(Config.LINUX_V).getAsString();
+					String linux_v_n = request_json.getAsJsonObject().get(Config.LINUX_V).getAsString();
+					field_value = removeEnterSignal(linux_v_n.trim());
 				}
 			} else {
 				if (objIsNull(request_json.getAsJsonObject().get(field))) {
@@ -98,6 +103,14 @@ public class Cleaner {
 			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
 		}//for--loop
 		return sb.substring(0,sb.length()-1);
+	}
+
+	private String removeEnterSignal(String source) {
+		String result = "NULL";
+		if (StringUtils.isNotEmpty(source)) {
+			result = source.replaceAll(Config.SLASH_N, "");
+		}
+		return result;
 	}
 
 	private String formateJsonString(String source) {
@@ -123,10 +136,11 @@ public class Cleaner {
 //				JsonArray ja = new JsonArray();
 //				ja = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).getAsJsonArray();
 //				field_value = "" + ja.size();
+				String  solutionList = "NULL";
 				if (objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY))) {
-					String  solutionList = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
-					field_value = getSidAndSC(solutionList);
+					solutionList = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
 				}
+				field_value = getSidAndSC(solutionList);
 			} else {
 				if (objIsNull(root.getAsJsonObject().get(field))) {
 					field_value = root.getAsJsonObject().get(field).getAsString();
@@ -139,18 +153,20 @@ public class Cleaner {
 	}
 
 	private String getSidAndSC(String solutionList) {
-		JsonElement root = new JsonParser().parse(solutionList);
 		StringBuffer sb = new StringBuffer();
-		JsonArray ja = new JsonArray();
-		int size = 0;
-		ja = root.getAsJsonArray();
-		size = ja.size();
 		String shell_code = "NULL";
 		String solution_id = "NULL";
-		if (size == Config.SINGLE_SOLUTION) {
-			shell_code = indexOfString(solutionList,Config.SHELL_CODE_BOUNDARY);
-			solution_id = indexOfString(solutionList, Config.SOLUTION_ID_BOUNDARY);
-		} 
+		if (!solutionList.equals("NULL")) {
+			JsonElement root = new JsonParser().parse(solutionList);
+			JsonArray ja = new JsonArray();
+			int size = 0;
+			ja = root.getAsJsonArray();
+			size = ja.size();
+			if (size == Config.SINGLE_SOLUTION) {
+				shell_code = indexOfString(solutionList,Config.SHELL_CODE_BOUNDARY);
+				solution_id = indexOfString(solutionList, Config.SOLUTION_ID_BOUNDARY);
+			} 
+		}
 		sb.append(solutionList).append(Config.DELIMEITER_V_BAR).append(solution_id).append(Config.DELIMEITER_V_BAR).append(shell_code);
 		
 		return sb.toString();
@@ -159,6 +175,9 @@ public class Cleaner {
 	private String indexOfString(String solutionList,String[] boundary) {
 		String result = "NULL";
 		int front_boundary = solutionList.indexOf(boundary[Config.FRONT_INDEX]);
+		if (front_boundary < 0 ) {
+			return result;
+		}
 		int back_boundary = solutionList.indexOf(boundary[Config.BACK_INDEX], front_boundary + boundary[Config.FRONT_INDEX].length());
 		result = solutionList.substring(front_boundary + boundary[Config.FRONT_INDEX].length(), back_boundary);
 		return result;
