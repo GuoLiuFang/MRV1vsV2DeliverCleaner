@@ -21,6 +21,10 @@ public class Config {
 	public static String IN_COLON = prop.getProperty("IN_COLON");
 	public static String OUT_COLON = prop.getProperty("OUT_COLON");
 	public static String COMBINE_COLON = prop.getProperty("COMBINE_COLON");
+	public static String IN_LOG_OUTPUT_NAME = prop.getProperty("IN_LOG_OUTPUT_NAME");
+	public static String OUT_LOG_OUTPUT_NAME = prop.getProperty("OUT_LOG_OUTPUT_NAME");
+	public static String COMBINE_LOG_OUTPUT_NAME = prop.getProperty("COMBINE_LOG_OUTPUT_NAME");
+	public static String ERROR_LOG_OUTPUT_NAME = prop.getProperty("ERROR_LOG_OUTPUT_NAME");
 	public static String DEVS = prop.getProperty("DEVS");
 	public static String COMPOSE_JSON_STRING = prop.getProperty("COMPOSE_JSON_STRING");
 	
