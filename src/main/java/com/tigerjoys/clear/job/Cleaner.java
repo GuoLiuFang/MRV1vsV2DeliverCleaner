@@ -11,7 +11,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tigerjoys.clear.config.Config;
-import com.tigerjoys.clear.model.DeliverIn;
 
 public class Cleaner {
 	private Logger logger = LogManager.getLogger();
@@ -81,6 +80,7 @@ public class Cleaner {
 		for (String field : Config.COMBINE_FIELDS) {
 			String field_value = "NULL";
 			if (field.equals(Config.UID_OUT_2_OBJ12)) {
+				field_value = "";
 				if (objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12)) && objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12))) {
 					field_value = response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
 				}
@@ -129,6 +129,7 @@ public class Cleaner {
 //				field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).toString();
 //			} else 
 			if (field.equals(Config.UID_OUT_2_OBJ12)) {
+				field_value = "";
 				if(objIsNull(root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12)) && objIsNull(root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12))){
 					field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
 				}
@@ -154,8 +155,8 @@ public class Cleaner {
 
 	private String getSidAndSC(String solutionList) {
 		StringBuffer sb = new StringBuffer();
-		String shell_code = "NULL";
-		String solution_id = "NULL";
+		String shell_code = "";
+		String solution_id = "";
 		if (!solutionList.equals("NULL")) {
 			JsonElement root = new JsonParser().parse(solutionList);
 			JsonArray ja = new JsonArray();
@@ -173,7 +174,7 @@ public class Cleaner {
 	}
 
 	private String indexOfString(String solutionList,String[] boundary) {
-		String result = "NULL";
+		String result = "";
 		int front_boundary = solutionList.indexOf(boundary[Config.FRONT_INDEX]);
 		if (front_boundary < 0 ) {
 			return result;
@@ -241,7 +242,7 @@ public class Cleaner {
 		StringBuffer sb = new StringBuffer();
 		String did = "NULL";
 		String record_time = "NULL";
-		String pid = "NULL";
+		String pid = "";
 		int did_index = front_segments.indexOf(Config.DID_QUOTE);
 		int end_index = front_segments.lastIndexOf(Config.BACK_QUOTE);
 		if(did_index > -1 && end_index > did_index + Config.DID_QUOTE.length()){
@@ -261,7 +262,7 @@ public class Cleaner {
 	private String getCombineTypeFrontInfo(String front_segments) {
 		StringBuffer sb = new StringBuffer();
 		String record_time = "NULL";
-		String pid = "NULL";
+		String pid = "";
 		int back_index = front_segments.indexOf(Config.INFO);
 		if (back_index < 0) {
 			back_index = front_segments.length();
