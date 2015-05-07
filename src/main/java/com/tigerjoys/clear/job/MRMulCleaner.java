@@ -30,7 +30,7 @@ public class MRMulCleaner {
 
 		public void map(Object key, Text value, Context context) {
 
-			String result = "NULL";
+			String result = "";
 			
 			if (value != null) {
 				if (StringUtils.isNotEmpty(value.toString().trim())) {
@@ -131,9 +131,9 @@ public class MRMulCleaner {
 
 	public static void main(String[] args) {
 		// /data/sword/input/processed_1000.txt
-		args = new String[2];
-		args[0] = "hdfs://localhost:19000/data/sword/input/";
-		args[1] = "hdfs://localhost:19000/data/sword/output/";
+//		args = new String[2];
+//		args[0] = "hdfs://localhost:19000/data/sword/input/";
+//		args[1] = "hdfs://localhost:19000/data/sword/output/";
 
 		Configuration conf = new Configuration();
 		Job job = null;

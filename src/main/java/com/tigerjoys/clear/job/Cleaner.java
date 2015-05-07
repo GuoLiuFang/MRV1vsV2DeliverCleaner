@@ -17,7 +17,7 @@ public class Cleaner {
 
 	public String clean(String line) {
 		// 这里返回的就是结果。判断类型，返回结果。
-		String result = "NULL";
+		String result = "";
 		int log_type = getLogType(line);
 		if (log_type == Config.IN_TYPE) {
 			result = cleanType(line, Config.IN_COLON);
@@ -38,8 +38,8 @@ public class Cleaner {
 	private String cleanType(String line, String type_flag) {
 		StringBuffer sb = new StringBuffer();
 		String[] segments = splitLine(line, type_flag);
-		String front_result = "NULL";
-		String back_result = "NULL";
+		String front_result = "";
+		String back_result = "";
 		if (type_flag.equals(Config.IN_COLON)) {
 			front_result = getFrontInfo(segments[Config.FRONT_SEGMENTS]);
 			back_result = getInTypeBackInfo(segments[Config.BACK_SEGMENTS]);
@@ -59,7 +59,7 @@ public class Cleaner {
 
 
 	private String getCombineTypeBackInfo(String back_segments) {
-		String request_response = "NULL";
+		String request_response = "";
 		int back_index = back_segments.indexOf(Config.DEVS);
 		if (back_index < 0) {
 			request_response = back_segments;
@@ -78,14 +78,14 @@ public class Cleaner {
 		
 		StringBuffer sb = new StringBuffer();
 		for (String field : Config.COMBINE_FIELDS) {
-			String field_value = "NULL";
+			String field_value = "";
 			if (field.equals(Config.UID_OUT_2_OBJ12)) {
 				field_value = "";
 				if (objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12)) && objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12))) {
 					field_value = response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
 				}
 			} else if (field.equals(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY)) {
-				String  solutionList = "NULL";
+				String  solutionList = "";
 				if (objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY))) {
 					solutionList = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
 				}
@@ -106,7 +106,7 @@ public class Cleaner {
 	}
 
 	private String removeEnterSignal(String source) {
-		String result = "NULL";
+		String result = "";
 		if (StringUtils.isNotEmpty(source)) {
 			result = source.replaceAll(Config.SLASH_N, "");
 		}
@@ -122,7 +122,7 @@ public class Cleaner {
 		JsonElement root = new JsonParser().parse(back_segments);
 		StringBuffer sb = new StringBuffer();
 		for (String field : Config.OUT_FIELDS) {
-			String field_value = "NULL";
+			String field_value = "";
 //			if (field.equals(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) {
 //				field_value = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).toString();
 //			} else if (field.equals(Config.USERCAKE_OUT_1_OBJ12)) {
@@ -137,7 +137,7 @@ public class Cleaner {
 //				JsonArray ja = new JsonArray();
 //				ja = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).getAsJsonArray();
 //				field_value = "" + ja.size();
-				String  solutionList = "NULL";
+				String  solutionList = "";
 				if (objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY))) {
 					solutionList = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
 				}
@@ -157,7 +157,7 @@ public class Cleaner {
 		StringBuffer sb = new StringBuffer();
 		String shell_code = "";
 		String solution_id = "";
-		if (!solutionList.equals("NULL")) {
+		if (!solutionList.equals("")) {
 			JsonElement root = new JsonParser().parse(solutionList);
 			JsonArray ja = new JsonArray();
 			int size = 0;
@@ -190,7 +190,7 @@ public class Cleaner {
 		// String value1 =
 		// root.getAsJsonObject().get("data").getAsJsonObject().get("field1").getAsString();
 		for (String field : Config.IN_FIELDS) {
-			String field_value = "NULL";
+			String field_value = "";
 
 			if (field.equals(Config.APP_INFO_IN_1_OBJ10)) {
 				if(objIsNull(root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10))){
@@ -240,8 +240,8 @@ public class Cleaner {
 		//考虑日志的不完整性，这是这次思路的问题，以为有了日志，就会是正确的日志，这个思路是不对的。
 		//往下分析日志有一个前提是，假设日志是不正确的情况。
 		StringBuffer sb = new StringBuffer();
-		String did = "NULL";
-		String record_time = "NULL";
+		String did = "";
+		String record_time = "";
 		String pid = "";
 		int did_index = front_segments.indexOf(Config.DID_QUOTE);
 		int end_index = front_segments.lastIndexOf(Config.BACK_QUOTE);
@@ -261,7 +261,7 @@ public class Cleaner {
 	}
 	private String getCombineTypeFrontInfo(String front_segments) {
 		StringBuffer sb = new StringBuffer();
-		String record_time = "NULL";
+		String record_time = "";
 		String pid = "";
 		int back_index = front_segments.indexOf(Config.INFO);
 		if (back_index < 0) {
