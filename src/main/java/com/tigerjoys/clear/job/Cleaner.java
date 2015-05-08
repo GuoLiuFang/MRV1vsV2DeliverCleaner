@@ -19,12 +19,12 @@ public class Cleaner {
 		// 这里返回的就是结果。判断类型，返回结果。
 		String result = "";
 		int log_type = getLogType(line);
-		if (log_type == Config.IN_TYPE) {
-			result = cleanType(line, Config.IN_COLON);
-		}
-		if (log_type == Config.OUT_TYPE) {
-			result = cleanType(line, Config.OUT_COLON);
-		}
+//		if (log_type == Config.IN_TYPE) {
+//			result = cleanType(line, Config.IN_COLON);
+//		}
+//		if (log_type == Config.OUT_TYPE) {
+//			result = cleanType(line, Config.OUT_COLON);
+//		}
 		if (log_type == Config.COMBINE_TYPE) {
 			result = cleanType(line, Config.COMBINE_COLON);
 		}

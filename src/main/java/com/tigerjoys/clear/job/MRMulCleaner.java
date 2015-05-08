@@ -70,28 +70,28 @@ public class MRMulCleaner {
 
 		public void reduce(Text key, Iterable<Text> values, Context context) {
 
-			if (key.toString().equals(Config.IN_COLON)) {
-				for (Text value : values) {
-					try {
-						mos.write(Config.IN_LOG_OUTPUT_NAME, NullWritable.get(), value);
-					} catch (IOException e) {
-						logger.error(e.getMessage());
-					} catch (InterruptedException e) {
-						logger.error(e.getMessage());
-					}
-				}
-			}
-			if (key.toString().equals(Config.OUT_COLON)) {
-				for (Text value : values) {
-					try {
-						mos.write(Config.OUT_LOG_OUTPUT_NAME, NullWritable.get(), value);
-					} catch (IOException e) {
-						logger.error(e.getMessage());
-					} catch (InterruptedException e) {
-						logger.error(e.getMessage());
-					}
-				}
-			}
+//			if (key.toString().equals(Config.IN_COLON)) {
+//				for (Text value : values) {
+//					try {
+//						mos.write(Config.IN_LOG_OUTPUT_NAME, NullWritable.get(), value);
+//					} catch (IOException e) {
+//						logger.error(e.getMessage());
+//					} catch (InterruptedException e) {
+//						logger.error(e.getMessage());
+//					}
+//				}
+//			}
+//			if (key.toString().equals(Config.OUT_COLON)) {
+//				for (Text value : values) {
+//					try {
+//						mos.write(Config.OUT_LOG_OUTPUT_NAME, NullWritable.get(), value);
+//					} catch (IOException e) {
+//						logger.error(e.getMessage());
+//					} catch (InterruptedException e) {
+//						logger.error(e.getMessage());
+//					}
+//				}
+//			}
 			if (key.toString().equals(Config.COMBINE_COLON)) {
 				for (Text value : values) {
 					try {
@@ -159,8 +159,8 @@ public class MRMulCleaner {
 		}
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-		MultipleOutputs.addNamedOutput(job, Config.IN_LOG_OUTPUT_NAME,	TextOutputFormat.class, NullWritable.class, Text.class);
-		MultipleOutputs.addNamedOutput(job, Config.OUT_LOG_OUTPUT_NAME, TextOutputFormat.class, NullWritable.class, Text.class);
+//		MultipleOutputs.addNamedOutput(job, Config.IN_LOG_OUTPUT_NAME,	TextOutputFormat.class, NullWritable.class, Text.class);
+//		MultipleOutputs.addNamedOutput(job, Config.OUT_LOG_OUTPUT_NAME, TextOutputFormat.class, NullWritable.class, Text.class);
 		MultipleOutputs.addNamedOutput(job, Config.COMBINE_LOG_OUTPUT_NAME, TextOutputFormat.class, NullWritable.class, Text.class);
 		MultipleOutputs.addNamedOutput(job, Config.ERROR_LOG_OUTPUT_NAME, TextOutputFormat.class,	NullWritable.class, Text.class);
 		try {
