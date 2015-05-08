@@ -33,7 +33,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hadoop-2.0-cdh-4.5.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j-2.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hadoop4.5.0"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
