@@ -1,6 +1,5 @@
 package com.tigerjoys.clear.job;
 
-import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -48,11 +47,9 @@ public class MRMulCleaner {
 				String[] key_value = result.split(Config.INFO);// 把错误信息直接输出到mapReduce中去。
 				context.write(new Text(key_value[Config.KEY_INDEX]), new Text(key_value[Config.VALUE_INDEX]));
 
-			} catch (IOException e) {
+			} catch (Exception e) {
 				logger.error(e.getMessage());
-			} catch (InterruptedException e) {
-				logger.error(e.getMessage());
-			}
+			} 
 
 		}// map()--method
 
@@ -97,9 +94,7 @@ public class MRMulCleaner {
 					try {
 						mos.write(Config.COMBINE_LOG_OUTPUT_NAME, NullWritable.get(),
 								value);
-					} catch (IOException e) {
-						logger.error(e.getMessage());
-					} catch (InterruptedException e) {
+					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
 				}
@@ -108,12 +103,10 @@ public class MRMulCleaner {
 				for (Text value : values) {
 					try {
 						mos.write(Config.ERROR_LOG_OUTPUT_NAME, NullWritable.get(), value);
-					} catch (IOException e) {
-						logger.error(e.getMessage());
-					} catch (InterruptedException e) {
+					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-				}
+				} 
 			}
 
 		}// reduce--method
@@ -121,11 +114,9 @@ public class MRMulCleaner {
 		public void cleanup(Context context) {
 			try {
 				mos.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				logger.error(e.getMessage());
-			} catch (InterruptedException e) {
-				logger.error(e.getMessage());
-			}
+			} 
 		}// cleanup--method
 	}// LogReducer--class
 
@@ -140,7 +131,7 @@ public class MRMulCleaner {
 
 		try {
 			job = Job.getInstance(conf, "多输出清洗");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 
@@ -154,7 +145,7 @@ public class MRMulCleaner {
 
 		try {
 			FileInputFormat.setInputPaths(job, new Path(args[0]));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
@@ -165,13 +156,9 @@ public class MRMulCleaner {
 		MultipleOutputs.addNamedOutput(job, Config.ERROR_LOG_OUTPUT_NAME, TextOutputFormat.class,	NullWritable.class, Text.class);
 		try {
 			System.exit(job.waitForCompletion(true) ? 0 : 1);
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		} catch (InterruptedException e) {
-			logger.error(e.getMessage());
-		}
+		} 
 
 	}// main--method
 
