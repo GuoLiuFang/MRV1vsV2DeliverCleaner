@@ -1,12 +1,8 @@
 package com.tigerjoys.clear.job;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -40,14 +36,14 @@ public class Cleaner {
 		String[] segments = splitLine(line, type_flag);
 		String front_result = "";
 		String back_result = "";
-		if (type_flag.equals(Config.IN_COLON)) {
-			front_result = getFrontInfo(segments[Config.FRONT_SEGMENTS]);
-			back_result = getInTypeBackInfo(segments[Config.BACK_SEGMENTS]);
-		}
-		if (type_flag.equals(Config.OUT_COLON)) {
-			front_result = getFrontInfo(segments[Config.FRONT_SEGMENTS]);
-			back_result = getOutTypeBackInfo(segments[Config.BACK_SEGMENTS]);
-		}
+//		if (type_flag.equals(Config.IN_COLON)) {
+//			front_result = getFrontInfo(segments[Config.FRONT_SEGMENTS]);
+//			back_result = getInTypeBackInfo(segments[Config.BACK_SEGMENTS]);
+//		}
+//		if (type_flag.equals(Config.OUT_COLON)) {
+//			front_result = getFrontInfo(segments[Config.FRONT_SEGMENTS]);
+//			back_result = getOutTypeBackInfo(segments[Config.BACK_SEGMENTS]);
+//		}
 		if (type_flag.equals(Config.COMBINE_COLON)) {
 			front_result = getCombineTypeFrontInfo(segments[Config.FRONT_SEGMENTS]);
 			back_result = getCombineTypeBackInfo(segments[Config.BACK_SEGMENTS]);
@@ -59,28 +55,26 @@ public class Cleaner {
 
 
 	private String getCombineTypeBackInfo(String back_segments) {
-		String request_response = "";
-		int back_index = back_segments.indexOf(Config.DEVS);
-		if (back_index < 0) {
-			request_response = back_segments;
-		}else{
-			request_response = back_segments.substring(0, back_index);
-			request_response += Config.COMPOSE_JSON_STRING;
+		int index_devs_begin = back_segments.indexOf(Config.DEVS);
+		int index_devs_front_comma = back_segments.lastIndexOf(Config.COMMA, index_devs_begin);
+		int index_defend_begin = back_segments.indexOf(Config.DEFEND);
+		int index_defend_front_comma = back_segments.lastIndexOf(Config.COMMA, index_defend_begin);
+		if (index_devs_begin > -1 && index_defend_begin > -1 && index_devs_begin > index_devs_front_comma && index_defend_begin > index_defend_front_comma) {
+			back_segments = back_segments.substring(0, index_devs_front_comma) + Config.RIGHT_BRACE + back_segments.substring(index_defend_front_comma, back_segments.length());
 		}
-		JsonElement root = new JsonParser().parse(request_response);
-		String response = root.getAsJsonObject().get(Config.RESPONSE).getAsString();
-//		response = formateJsonString(response);
+		back_segments = formateJsonString(back_segments);
+		JsonElement root = new JsonParser().parse(back_segments);
+		
+		String response = root.getAsJsonObject().get(Config.RESPONSE).toString();
 		JsonElement response_json = new JsonParser().parse(response);
 		//------------//
-		String request = root.getAsJsonObject().get(Config.REQUEST).getAsString();
-//		request = formateJsonString(request);
+		String request = root.getAsJsonObject().get(Config.REQUEST).toString();
 		JsonElement request_json = new JsonParser().parse(request);
 		
 		StringBuffer sb = new StringBuffer();
 		for (String field : Config.COMBINE_FIELDS) {
 			String field_value = "";
 			if (field.equals(Config.UID_OUT_2_OBJ12)) {
-				field_value = "";
 				if (objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12)) && objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12))) {
 					field_value = response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
 				}
@@ -90,6 +84,29 @@ public class Cleaner {
 					solutionList = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
 				}
 				field_value = getSidAndSC(solutionList);
+				//---------
+			} else if (field.equals(Config.SID)) {
+				if (objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID))) {
+					field_value = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID).getAsString();
+				}
+				//-----------
+			} else 
+				
+				if (field.equals(Config.KNOWN_SOLUTION_ID)) {
+				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID)) ) {
+					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID).getAsString();
+				}
+				//-----------
+			} else if (field.equals(Config.KNOWN_SOLUTION)) {
+				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION)) ) {
+					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION).getAsString();
+				}
+				//-----------
+			} else if (field.equals(Config.VERSION)) {
+				if (objIsNull(root.getAsJsonObject().get(Config.VERSION)) ) {
+					field_value = root.getAsJsonObject().get(Config.VERSION).getAsString();
+				}
+				//-----------
 			} else if (field.equals(Config.LINUX_V)) {
 				if (objIsNull(request_json.getAsJsonObject().get(Config.LINUX_V))) {
 					String linux_v_n = request_json.getAsJsonObject().get(Config.LINUX_V).getAsString();
@@ -114,7 +131,9 @@ public class Cleaner {
 	}
 
 	private String formateJsonString(String source) {
-		source.replaceAll(Config.SLASH_QUOTE, Config.BACK_QUOTE);
+		source = source.replaceAll(Config.SLASH_QUOTE, Config.BACK_QUOTE);
+		source = source.replaceAll(Config.QUOTE_LEFT_BRACE, Config.LEFT_BRACE);
+		source = source.replaceAll(Config.RIGHT_BRACE_QUOTE_, Config.RIGHT_BRACE);
 		return source;
 	}
 
@@ -197,6 +216,12 @@ public class Cleaner {
 					field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).toString();
 				}
 				
+				
+			} else	if (field.equals(Config.LINUX_V)) {
+					if(objIsNull(root.getAsJsonObject().get(Config.LINUX_V))){
+						field_value = root.getAsJsonObject().get(Config.LINUX_V).getAsString();
+						field_value = field_value.replaceAll("\\n", "");
+					}
 //			} else if (field.equals(Config.FILE_2_OBJ11_OBJ20)) {
 //				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).toString();
 //			} else if (field.equals(Config.PATH_IN_3_OBJ11_OBJ21)) {
@@ -278,10 +303,10 @@ public class Cleaner {
 	}
 
 	private int getLogType(String line) {
-		if (line.contains(Config.IN_COLON))
-			return Config.IN_TYPE;
-		if (line.contains(Config.OUT_COLON))
-			return Config.OUT_TYPE;
+//		if (line.contains(Config.IN_COLON))
+//			return Config.IN_TYPE;
+//		if (line.contains(Config.OUT_COLON))
+//			return Config.OUT_TYPE;
 		if (line.contains(Config.COMBINE_COLON))
 			return Config.COMBINE_TYPE;
 		return Config.UNKNOWN_TYPE;

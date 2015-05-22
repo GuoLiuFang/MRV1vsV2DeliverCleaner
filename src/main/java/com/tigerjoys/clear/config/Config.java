@@ -18,6 +18,9 @@ public class Config {
 	
 	
 	public static String LEFT_BRACE = prop.getProperty("LEFT_BRACE");
+	public static String RIGHT_BRACE = prop.getProperty("RIGHT_BRACE");
+	public static String QUOTE_LEFT_BRACE = prop.getProperty("QUOTE_LEFT_BRACE");
+	public static String RIGHT_BRACE_QUOTE_ = prop.getProperty("RIGHT_BRACE_QUOTE_");
 	public static String IN_COLON = prop.getProperty("IN_COLON");
 	public static String OUT_COLON = prop.getProperty("OUT_COLON");
 	public static String COMBINE_COLON = prop.getProperty("COMBINE_COLON");
@@ -26,6 +29,7 @@ public class Config {
 	public static String COMBINE_LOG_OUTPUT_NAME = prop.getProperty("COMBINE_LOG_OUTPUT_NAME");
 	public static String ERROR_LOG_OUTPUT_NAME = prop.getProperty("ERROR_LOG_OUTPUT_NAME");
 	public static String DEVS = prop.getProperty("DEVS");
+	public static String DEFEND = prop.getProperty("DEFEND");
 	public static String COMPOSE_JSON_STRING = prop.getProperty("COMPOSE_JSON_STRING");
 	
 	
@@ -50,7 +54,11 @@ public class Config {
 	public static String USERCAKE_OUT_1_OBJ12 =prop.getProperty("USERCAKE_OUT_1_OBJ12");
 	public static String UID_OUT_2_OBJ12 =prop.getProperty("UID_OUT_2_OBJ12");
 	public static String SOLUTIONLIST_OUT_2_OBJ11_ARRAY =prop.getProperty("SOLUTIONLIST_OUT_2_OBJ11_ARRAY");
-	public static String LINUX_V =prop.getProperty("LINUX_V");
+	public static String LINUX_V = prop.getProperty("LINUX_V");
+	public static String SID = prop.getProperty("SID");
+	public static String KNOWN_SOLUTION_ID = prop.getProperty("KNOWN_SOLUTION_ID");
+	public static String VERSION = prop.getProperty("VERSION");
+	public static String KNOWN_SOLUTION = prop.getProperty("KNOWN_SOLUTION");
 	
 	
 	public static String RESPONSE =prop.getProperty("RESPONSE");

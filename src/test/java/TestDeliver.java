@@ -20,7 +20,6 @@
 //		Cleaner dl = new Cleaner();
 //		String[] result = dl.clean(line).split(Config.INFO);
 //		for (String string : result) {
-//			
 //			System.out.println(string);
 //		}
 //		
