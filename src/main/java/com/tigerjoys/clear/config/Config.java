@@ -21,6 +21,7 @@ public class Config {
 	public static String RIGHT_BRACE = prop.getProperty("RIGHT_BRACE");
 	public static String QUOTE_LEFT_BRACE = prop.getProperty("QUOTE_LEFT_BRACE");
 	public static String RIGHT_BRACE_QUOTE_ = prop.getProperty("RIGHT_BRACE_QUOTE_");
+	public static String RIGHT_BRACE_COMMA = prop.getProperty("RIGHT_BRACE_COMMA");
 	public static String IN_COLON = prop.getProperty("IN_COLON");
 	public static String OUT_COLON = prop.getProperty("OUT_COLON");
 	public static String COMBINE_COLON = prop.getProperty("COMBINE_COLON");
@@ -29,6 +30,9 @@ public class Config {
 	public static String COMBINE_LOG_OUTPUT_NAME = prop.getProperty("COMBINE_LOG_OUTPUT_NAME");
 	public static String ERROR_LOG_OUTPUT_NAME = prop.getProperty("ERROR_LOG_OUTPUT_NAME");
 	public static String DEVS = prop.getProperty("DEVS");
+	public static String TCPS = prop.getProperty("TCPS");
+	public static String EXECUTED_SOLUTIONS = prop.getProperty("EXECUTED_SOLUTIONS");
+	public static String USER_AGENT = prop.getProperty("USER_AGENT");
 	public static String DEFEND = prop.getProperty("DEFEND");
 	public static String COMPOSE_JSON_STRING = prop.getProperty("COMPOSE_JSON_STRING");
 	
@@ -38,6 +42,7 @@ public class Config {
 	public static String BACK_QUOTE = prop.getProperty("BACK_QUOTE");
 	public static String SLASH_QUOTE = prop.getProperty("SLASH_QUOTE");
 	public static String SLASH_N = prop.getProperty("SLASH_N");
+	public static String SLASH = prop.getProperty("SLASH");
 	public static String K_NULL = prop.getProperty("K_NULL");
 	public static String COMMA = prop.getProperty("COMMA");
 	public static String SPACE = prop.getProperty("SPACE");

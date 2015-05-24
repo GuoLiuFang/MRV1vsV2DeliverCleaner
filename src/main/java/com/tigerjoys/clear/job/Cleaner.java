@@ -59,10 +59,25 @@ public class Cleaner {
 		int index_devs_front_comma = back_segments.lastIndexOf(Config.COMMA, index_devs_begin);
 		int index_defend_begin = back_segments.indexOf(Config.DEFEND);
 		int index_defend_front_comma = back_segments.lastIndexOf(Config.COMMA, index_defend_begin);
-		if (index_devs_begin > -1 && index_defend_begin > -1 && index_devs_begin > index_devs_front_comma && index_defend_begin > index_defend_front_comma) {
+		if (index_devs_begin > -1) {
+			int tcps = back_segments.indexOf(Config.TCPS);
+			index_devs_begin = Math.min(index_devs_begin, tcps);
+			index_devs_front_comma = back_segments.lastIndexOf(Config.COMMA, index_devs_begin);
+		}
+		if (index_devs_begin > -1 && index_defend_begin > -1 && index_devs_begin > index_devs_front_comma && index_defend_begin > index_defend_front_comma ) {
 			back_segments = back_segments.substring(0, index_devs_front_comma) + Config.RIGHT_BRACE + back_segments.substring(index_defend_front_comma, back_segments.length());
 		}
+		if(index_devs_begin > -1 && index_defend_begin == -1 && index_devs_begin > index_devs_front_comma ){
+			index_defend_begin = back_segments.indexOf(Config.USER_AGENT);
+			index_defend_front_comma = back_segments.lastIndexOf(Config.COMMA, index_defend_begin);
+			if(index_defend_begin > -1 || index_defend_front_comma < index_defend_begin){
+				back_segments = back_segments.substring(0, index_devs_front_comma) + back_segments.substring(index_defend_front_comma, back_segments.length());
+			}
+			
+		}
+//		System.out.println(back_segments);
 		back_segments = formateJsonString(back_segments);
+//		System.out.println(back_segments);
 		JsonElement root = new JsonParser().parse(back_segments);
 		
 		String response = root.getAsJsonObject().get(Config.RESPONSE).toString();
@@ -76,7 +91,7 @@ public class Cleaner {
 			String field_value = "";
 			if (field.equals(Config.UID_OUT_2_OBJ12)) {
 				if (objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12)) && objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12))) {
-					field_value = response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
+					field_value = response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).toString();
 				}
 			} else if (field.equals(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY)) {
 				String  solutionList = "";
@@ -87,34 +102,34 @@ public class Cleaner {
 				//---------
 			} else if (field.equals(Config.SID)) {
 				if (objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID))) {
-					field_value = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID).getAsString();
+					field_value = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID).toString();
 				}
 				//-----------
 			} else 
 				
 				if (field.equals(Config.KNOWN_SOLUTION_ID)) {
 				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID)) ) {
-					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID).getAsString();
+					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID).toString();
 				}
 				//-----------
 			} else if (field.equals(Config.KNOWN_SOLUTION)) {
 				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION)) ) {
-					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION).getAsString();
+					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION).toString();
 				}
 				//-----------
 			} else if (field.equals(Config.VERSION)) {
 				if (objIsNull(root.getAsJsonObject().get(Config.VERSION)) ) {
-					field_value = root.getAsJsonObject().get(Config.VERSION).getAsString();
+					field_value = root.getAsJsonObject().get(Config.VERSION).toString();
 				}
 				//-----------
 			} else if (field.equals(Config.LINUX_V)) {
 				if (objIsNull(request_json.getAsJsonObject().get(Config.LINUX_V))) {
-					String linux_v_n = request_json.getAsJsonObject().get(Config.LINUX_V).getAsString();
+					String linux_v_n = request_json.getAsJsonObject().get(Config.LINUX_V).toString();
 					field_value = removeEnterSignal(linux_v_n.trim());
 				}
 			} else {
 				if (objIsNull(request_json.getAsJsonObject().get(field))) {
-					field_value = request_json.getAsJsonObject().get(field).getAsString();
+					field_value = request_json.getAsJsonObject().get(field).toString();
 				}
 			}
 			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
@@ -126,6 +141,7 @@ public class Cleaner {
 		String result = "";
 		if (StringUtils.isNotEmpty(source)) {
 			result = source.replaceAll(Config.SLASH_N, "");
+			result = result.replaceAll(Config.SLASH, "");
 		}
 		return result;
 	}
@@ -150,7 +166,7 @@ public class Cleaner {
 			if (field.equals(Config.UID_OUT_2_OBJ12)) {
 				field_value = "";
 				if(objIsNull(root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12)) && objIsNull(root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12))){
-					field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
+					field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).toString();
 				}
 			} else if (field.equals(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY)) {
 //				JsonArray ja = new JsonArray();
@@ -163,7 +179,7 @@ public class Cleaner {
 				field_value = getSidAndSC(solutionList);
 			} else {
 				if (objIsNull(root.getAsJsonObject().get(field))) {
-					field_value = root.getAsJsonObject().get(field).getAsString();
+					field_value = root.getAsJsonObject().get(field).toString();
 				}
 			}
 			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
@@ -207,7 +223,7 @@ public class Cleaner {
 		JsonElement root = new JsonParser().parse(back_segments);
 		StringBuffer sb = new StringBuffer();
 		// String value1 =
-		// root.getAsJsonObject().get("data").getAsJsonObject().get("field1").getAsString();
+		// root.getAsJsonObject().get("data").getAsJsonObject().get("field1").toString();
 		for (String field : Config.IN_FIELDS) {
 			String field_value = "";
 
@@ -219,15 +235,15 @@ public class Cleaner {
 				
 			} else	if (field.equals(Config.LINUX_V)) {
 					if(objIsNull(root.getAsJsonObject().get(Config.LINUX_V))){
-						field_value = root.getAsJsonObject().get(Config.LINUX_V).getAsString();
+						field_value = root.getAsJsonObject().get(Config.LINUX_V).toString();
 						field_value = field_value.replaceAll("\\n", "");
 					}
 //			} else if (field.equals(Config.FILE_2_OBJ11_OBJ20)) {
 //				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).toString();
 //			} else if (field.equals(Config.PATH_IN_3_OBJ11_OBJ21)) {
-//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).getAsJsonObject().get(Config.PATH_IN_3_OBJ11_OBJ21).getAsString();
+//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).getAsJsonObject().get(Config.PATH_IN_3_OBJ11_OBJ21).toString();
 //			} else if (field.equals(Config.HASH_2_OBJ12)) {
-//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.HASH_2_OBJ12).getAsString();
+//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.HASH_2_OBJ12).toString();
 			} else if (field.equals(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY)) {
 //				JsonArray ja = new JsonArray();
 //				ja = root.getAsJsonObject().get(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY).getAsJsonArray();
@@ -244,7 +260,7 @@ public class Cleaner {
 				}
 			} else {
 				if (objIsNull(root.getAsJsonObject().get(field))) {
-					field_value = root.getAsJsonObject().get(field).getAsString();
+					field_value = root.getAsJsonObject().get(field).toString();
 				}
 			}
 			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
