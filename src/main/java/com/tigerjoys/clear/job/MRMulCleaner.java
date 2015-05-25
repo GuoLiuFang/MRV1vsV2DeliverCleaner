@@ -38,15 +38,12 @@ public class MRMulCleaner {
 				logger.error("输入日志Text对象实例value为null");
 			}
 			try {
-				// 对result进行分解。
 				String[] key_value = result.split(Config.INFO);// 把错误信息直接输出到mapReduce中去。
 				context.write(new Text(key_value[Config.KEY_INDEX]), new Text(key_value[Config.VALUE_INDEX]));
 			} catch (Exception e) {
 				logger.error(e.getMessage());
 			}
-
 		}// map()--method
-
 	}// LogTokenizerMapper--class
 
 	public static class LogReducer extends Reducer<Text, Text, Text, Text> {
@@ -99,7 +96,6 @@ public class MRMulCleaner {
 					}
 				}
 			}
-
 		}// reduce--method
 
 		public void cleanup(Context context) {
@@ -146,7 +142,6 @@ public class MRMulCleaner {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-
 	}// main--method
 
 }

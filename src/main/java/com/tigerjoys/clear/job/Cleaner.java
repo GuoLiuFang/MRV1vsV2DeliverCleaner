@@ -3,6 +3,7 @@ package com.tigerjoys.clear.job;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -12,7 +13,6 @@ public class Cleaner {
 	private Logger logger = LogManager.getLogger();
 
 	public String clean(String line) {
-		// 这里返回的就是结果。判断类型，返回结果。
 		String result = "";
 		int log_type = getLogType(line);
 //		if (log_type == Config.IN_TYPE) {
@@ -52,40 +52,16 @@ public class Cleaner {
 		return sb.toString();
 	}
 
-
-
 	private String getCombineTypeBackInfo(String back_segments) {
-		int index_devs_begin = back_segments.indexOf(Config.DEVS);
-		int index_devs_front_comma = back_segments.lastIndexOf(Config.COMMA, index_devs_begin);
-		int index_defend_begin = back_segments.indexOf(Config.DEFEND);
-		int index_defend_front_comma = back_segments.lastIndexOf(Config.COMMA, index_defend_begin);
-		if (index_devs_begin > -1) {
-			int tcps = back_segments.indexOf(Config.TCPS);
-			index_devs_begin = Math.min(index_devs_begin, tcps);
-			index_devs_front_comma = back_segments.lastIndexOf(Config.COMMA, index_devs_begin);
-		}
-		if (index_devs_begin > -1 && index_defend_begin > -1 && index_devs_begin > index_devs_front_comma && index_defend_begin > index_defend_front_comma ) {
-			back_segments = back_segments.substring(0, index_devs_front_comma) + Config.RIGHT_BRACE + back_segments.substring(index_defend_front_comma, back_segments.length());
-		}
-		if(index_devs_begin > -1 && index_defend_begin == -1 && index_devs_begin > index_devs_front_comma ){
-			index_defend_begin = back_segments.indexOf(Config.USER_AGENT);
-			index_defend_front_comma = back_segments.lastIndexOf(Config.COMMA, index_defend_begin);
-			if(index_defend_begin > -1 || index_defend_front_comma < index_defend_begin){
-				back_segments = back_segments.substring(0, index_devs_front_comma) + back_segments.substring(index_defend_front_comma, back_segments.length());
-			}
-			
-		}
+//		back_segments = truncateString(back_segments);
 //		System.out.println(back_segments);
-		back_segments = formateJsonString(back_segments);
+//		back_segments = formateJsonString(back_segments);
 //		System.out.println(back_segments);
 		JsonElement root = new JsonParser().parse(back_segments);
-		
 		String response = root.getAsJsonObject().get(Config.RESPONSE).toString();
 		JsonElement response_json = new JsonParser().parse(response);
-		//------------//
 		String request = root.getAsJsonObject().get(Config.REQUEST).toString();
 		JsonElement request_json = new JsonParser().parse(request);
-		
 		StringBuffer sb = new StringBuffer();
 		for (String field : Config.COMBINE_FIELDS) {
 			String field_value = "";
@@ -105,9 +81,7 @@ public class Cleaner {
 					field_value = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID).getAsString();
 				}
 				//-----------
-			} else 
-				
-				if (field.equals(Config.KNOWN_SOLUTION_ID)) {
+			} else if (field.equals(Config.KNOWN_SOLUTION_ID)) {
 				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID)) ) {
 					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID).getAsString();
 				}
@@ -144,6 +118,34 @@ public class Cleaner {
 			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
 		}//for--loop
 		return sb.substring(0,sb.length()-1);
+	}
+
+	private String truncateString(String back_segments) {
+		int index_devs_begin = back_segments.indexOf(Config.DEVS);
+		int index_devs_front_comma = back_segments.lastIndexOf(Config.COMMA, index_devs_begin);
+		int index_devs_back_bracket = back_segments.indexOf(Config.BRACKET, index_devs_begin);
+		int index_devs_back_comma = back_segments.indexOf(Config.COMMA, index_devs_back_bracket);
+		if (index_devs_begin > -1) {
+			back_segments = back_segments.substring(0, index_devs_front_comma) + back_segments.substring(index_devs_back_comma, back_segments.length());
+//			System.out.println(back_segments);
+		}
+//		int index_props_begin = back_segments.indexOf(Config.PROPS);
+//		int index_props_front_comma = back_segments.lastIndexOf(Config.COMMA, index_props_begin);
+//		int index_props_back_brace = back_segments.indexOf(Config.RIGHT_BRACE, index_props_begin);
+//		int index_props_back_comma = back_segments.indexOf(Config.COMMA, index_props_back_brace);
+//		if (index_props_begin > -1) {
+//			back_segments = back_segments.substring(0, index_props_front_comma) + back_segments.substring(index_props_back_comma, back_segments.length());
+//			System.out.println(back_segments);
+//		}
+		int index_ps_begin = back_segments.indexOf(Config.PS);//ps,]
+		int index_ps_front_comma = back_segments.lastIndexOf(Config.COMMA, index_ps_begin);
+		int index_ps_back_bracket = back_segments.indexOf(Config.BRACKET, index_ps_begin);
+		int index_ps_back_comma = back_segments.indexOf(Config.COMMA, index_ps_back_bracket);
+		if (index_ps_begin > -1) {
+			back_segments = back_segments.substring(0, index_ps_front_comma) + back_segments.substring(index_ps_back_comma, back_segments.length());
+//			System.out.println(back_segments);
+		}
+		return back_segments;
 	}
 
 	private String removeEnterSignal(String source) {
@@ -183,7 +185,7 @@ public class Cleaner {
 //				field_value = "" + ja.size();
 				String  solutionList = "";
 				if (objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY))) {
-					solutionList = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).getAsString();
+					solutionList = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
 				}
 				field_value = getSidAndSC(solutionList);
 			} else {
@@ -213,7 +215,6 @@ public class Cleaner {
 			} 
 		}
 		sb.append(solutionList).append(Config.DELIMEITER_V_BAR).append(solution_id).append(Config.DELIMEITER_V_BAR).append(shell_code);
-		
 		return sb.toString();
 	}
 
@@ -235,13 +236,10 @@ public class Cleaner {
 		// root.getAsJsonObject().get("data").getAsJsonObject().get("field1").getAsString();
 		for (String field : Config.IN_FIELDS) {
 			String field_value = "";
-
 			if (field.equals(Config.APP_INFO_IN_1_OBJ10)) {
 				if(objIsNull(root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10))){
 					field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsString();
 				}
-				
-				
 			} else	if (field.equals(Config.LINUX_V)) {
 					if(objIsNull(root.getAsJsonObject().get(Config.LINUX_V))){
 						field_value = root.getAsJsonObject().get(Config.LINUX_V).getAsString();
@@ -287,8 +285,6 @@ public class Cleaner {
 	}
 
 	private String getFrontInfo(String front_segments) {
-		//考虑日志的不完整性，这是这次思路的问题，以为有了日志，就会是正确的日志，这个思路是不对的。
-		//往下分析日志有一个前提是，假设日志是不正确的情况。
 		StringBuffer sb = new StringBuffer();
 		String did = "";
 		String record_time = "";
@@ -344,5 +340,4 @@ public class Cleaner {
 		segments[Config.BACK_SEGMENTS] = line.substring(index + seperator.length(), line.length());
 		return segments;
 	}
-
 }

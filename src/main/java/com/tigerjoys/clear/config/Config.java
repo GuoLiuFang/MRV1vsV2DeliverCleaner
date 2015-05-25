@@ -19,6 +19,7 @@ public class Config {
 	
 	public static String LEFT_BRACE = prop.getProperty("LEFT_BRACE");
 	public static String RIGHT_BRACE = prop.getProperty("RIGHT_BRACE");
+	public static String BRACKET = prop.getProperty("BRACKET");
 	public static String QUOTE_LEFT_BRACE = prop.getProperty("QUOTE_LEFT_BRACE");
 	public static String RIGHT_BRACE_QUOTE_ = prop.getProperty("RIGHT_BRACE_QUOTE_");
 	public static String RIGHT_BRACE_COMMA = prop.getProperty("RIGHT_BRACE_COMMA");
@@ -30,6 +31,8 @@ public class Config {
 	public static String COMBINE_LOG_OUTPUT_NAME = prop.getProperty("COMBINE_LOG_OUTPUT_NAME");
 	public static String ERROR_LOG_OUTPUT_NAME = prop.getProperty("ERROR_LOG_OUTPUT_NAME");
 	public static String DEVS = prop.getProperty("DEVS");
+	public static String PROPS = prop.getProperty("PROPS");
+	public static String PS = prop.getProperty("PS");
 	public static String TCPS = prop.getProperty("TCPS");
 	public static String TAG = prop.getProperty("TAG");
 	public static String EXECUTED_SOLUTIONS = prop.getProperty("EXECUTED_SOLUTIONS");
