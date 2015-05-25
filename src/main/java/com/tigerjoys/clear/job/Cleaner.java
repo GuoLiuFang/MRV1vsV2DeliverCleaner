@@ -91,7 +91,7 @@ public class Cleaner {
 			String field_value = "";
 			if (field.equals(Config.UID_OUT_2_OBJ12)) {
 				if (objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12)) && objIsNull(response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12))) {
-					field_value = response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).toString();
+					field_value = response_json.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
 				}
 			} else if (field.equals(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY)) {
 				String  solutionList = "";
@@ -102,34 +102,43 @@ public class Cleaner {
 				//---------
 			} else if (field.equals(Config.SID)) {
 				if (objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID))) {
-					field_value = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID).toString();
+					field_value = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID).getAsString();
 				}
 				//-----------
 			} else 
 				
 				if (field.equals(Config.KNOWN_SOLUTION_ID)) {
 				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID)) ) {
-					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID).toString();
+					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID).getAsString();
 				}
 				//-----------
 			} else if (field.equals(Config.KNOWN_SOLUTION)) {
 				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION)) ) {
-					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION).toString();
+					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION).getAsString();
 				}
 				//-----------
 			} else if (field.equals(Config.VERSION)) {
 				if (objIsNull(root.getAsJsonObject().get(Config.VERSION)) ) {
-					field_value = root.getAsJsonObject().get(Config.VERSION).toString();
+					field_value = root.getAsJsonObject().get(Config.VERSION).getAsString();
+				}
+				//-----------
+			} else if (field.equals(Config.TAG)) {
+				if (objIsNull(root.getAsJsonObject().get(Config.TAG)) ) {
+					if (objIsNull(root.getAsJsonObject().get(Config.TAG).getAsJsonObject().get(Config.TAG)) ) {
+						field_value = root.getAsJsonObject().get(Config.TAG).getAsJsonObject().get(Config.TAG).getAsString();
+					}else {
+						field_value = root.getAsJsonObject().get(Config.TAG).getAsString();
+					}
 				}
 				//-----------
 			} else if (field.equals(Config.LINUX_V)) {
 				if (objIsNull(request_json.getAsJsonObject().get(Config.LINUX_V))) {
-					String linux_v_n = request_json.getAsJsonObject().get(Config.LINUX_V).toString();
+					String linux_v_n = request_json.getAsJsonObject().get(Config.LINUX_V).getAsString();
 					field_value = removeEnterSignal(linux_v_n.trim());
 				}
 			} else {
 				if (objIsNull(request_json.getAsJsonObject().get(field))) {
-					field_value = request_json.getAsJsonObject().get(field).toString();
+					field_value = request_json.getAsJsonObject().get(field).getAsString();
 				}
 			}
 			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
@@ -159,14 +168,14 @@ public class Cleaner {
 		for (String field : Config.OUT_FIELDS) {
 			String field_value = "";
 //			if (field.equals(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) {
-//				field_value = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).toString();
+//				field_value = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsString();
 //			} else if (field.equals(Config.USERCAKE_OUT_1_OBJ12)) {
-//				field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).toString();
+//				field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsString();
 //			} else 
 			if (field.equals(Config.UID_OUT_2_OBJ12)) {
 				field_value = "";
 				if(objIsNull(root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12)) && objIsNull(root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12))){
-					field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).toString();
+					field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
 				}
 			} else if (field.equals(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY)) {
 //				JsonArray ja = new JsonArray();
@@ -174,12 +183,12 @@ public class Cleaner {
 //				field_value = "" + ja.size();
 				String  solutionList = "";
 				if (objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY))) {
-					solutionList = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
+					solutionList = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).getAsString();
 				}
 				field_value = getSidAndSC(solutionList);
 			} else {
 				if (objIsNull(root.getAsJsonObject().get(field))) {
-					field_value = root.getAsJsonObject().get(field).toString();
+					field_value = root.getAsJsonObject().get(field).getAsString();
 				}
 			}
 			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
@@ -223,44 +232,44 @@ public class Cleaner {
 		JsonElement root = new JsonParser().parse(back_segments);
 		StringBuffer sb = new StringBuffer();
 		// String value1 =
-		// root.getAsJsonObject().get("data").getAsJsonObject().get("field1").toString();
+		// root.getAsJsonObject().get("data").getAsJsonObject().get("field1").getAsString();
 		for (String field : Config.IN_FIELDS) {
 			String field_value = "";
 
 			if (field.equals(Config.APP_INFO_IN_1_OBJ10)) {
 				if(objIsNull(root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10))){
-					field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).toString();
+					field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsString();
 				}
 				
 				
 			} else	if (field.equals(Config.LINUX_V)) {
 					if(objIsNull(root.getAsJsonObject().get(Config.LINUX_V))){
-						field_value = root.getAsJsonObject().get(Config.LINUX_V).toString();
+						field_value = root.getAsJsonObject().get(Config.LINUX_V).getAsString();
 						field_value = field_value.replaceAll("\\n", "");
 					}
 //			} else if (field.equals(Config.FILE_2_OBJ11_OBJ20)) {
-//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).toString();
+//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).getAsString();
 //			} else if (field.equals(Config.PATH_IN_3_OBJ11_OBJ21)) {
-//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).getAsJsonObject().get(Config.PATH_IN_3_OBJ11_OBJ21).toString();
+//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).getAsJsonObject().get(Config.PATH_IN_3_OBJ11_OBJ21).getAsString();
 //			} else if (field.equals(Config.HASH_2_OBJ12)) {
-//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.HASH_2_OBJ12).toString();
+//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.HASH_2_OBJ12).getAsString();
 			} else if (field.equals(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY)) {
 //				JsonArray ja = new JsonArray();
 //				ja = root.getAsJsonObject().get(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY).getAsJsonArray();
 //				field_value = "" + ja.size();
 				if (objIsNull(root.getAsJsonObject().get(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY))) {
-					field_value = root.getAsJsonObject().get(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY).toString();
+					field_value = root.getAsJsonObject().get(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY).getAsString();
 				}
 			} else if (field.equals(Config.DOWNLOAD_FILES_IN_1_ARRAY)) {
 //				JsonArray ja = new JsonArray();
 //				ja = root.getAsJsonObject().get(Config.DOWNLOAD_FILES_IN_1_ARRAY).getAsJsonArray();
 //				field_value = "" + ja.size();
 				if (objIsNull(root.getAsJsonObject().get(Config.DOWNLOAD_FILES_IN_1_ARRAY))) {
-					field_value = root.getAsJsonObject().get(Config.DOWNLOAD_FILES_IN_1_ARRAY).toString();
+					field_value = root.getAsJsonObject().get(Config.DOWNLOAD_FILES_IN_1_ARRAY).getAsString();
 				}
 			} else {
 				if (objIsNull(root.getAsJsonObject().get(field))) {
-					field_value = root.getAsJsonObject().get(field).toString();
+					field_value = root.getAsJsonObject().get(field).getAsString();
 				}
 			}
 			sb.append(field_value).append(Config.DELIMEITER_V_BAR);

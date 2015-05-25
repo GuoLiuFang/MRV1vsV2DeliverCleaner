@@ -31,6 +31,7 @@ public class Config {
 	public static String ERROR_LOG_OUTPUT_NAME = prop.getProperty("ERROR_LOG_OUTPUT_NAME");
 	public static String DEVS = prop.getProperty("DEVS");
 	public static String TCPS = prop.getProperty("TCPS");
+	public static String TAG = prop.getProperty("TAG");
 	public static String EXECUTED_SOLUTIONS = prop.getProperty("EXECUTED_SOLUTIONS");
 	public static String USER_AGENT = prop.getProperty("USER_AGENT");
 	public static String DEFEND = prop.getProperty("DEFEND");
