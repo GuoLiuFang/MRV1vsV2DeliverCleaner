@@ -108,6 +108,7 @@ public class Cleaner {
 			} else if (field.equals(Config.LINUX_V)) {
 				if (objIsNull(request_json.getAsJsonObject().get(Config.LINUX_V))) {
 					String linux_v_n = request_json.getAsJsonObject().get(Config.LINUX_V).getAsString();
+//					String trim_linux_v = linux_v_n.trim();
 					field_value = removeEnterSignal(linux_v_n.trim());
 				}
 			} else {
@@ -152,7 +153,7 @@ public class Cleaner {
 		String result = "";
 		if (StringUtils.isNotEmpty(source)) {
 			result = source.replaceAll(Config.SLASH_N, "");
-			result = result.replaceAll(Config.SLASH, "");
+//			result = result.replaceAll(Config.SLASH, "");
 		}
 		return result;
 	}
