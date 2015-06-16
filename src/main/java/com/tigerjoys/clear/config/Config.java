@@ -68,6 +68,7 @@ public class Config {
 	public static String KNOWN_SOLUTION_ID = prop.getProperty("KNOWN_SOLUTION_ID");
 	public static String VERSION = prop.getProperty("VERSION");
 	public static String KNOWN_SOLUTION = prop.getProperty("KNOWN_SOLUTION");
+	public static String VM_ENABLE = prop.getProperty("VM_ENABLE");
 	
 	
 	public static String RESPONSE =prop.getProperty("RESPONSE");

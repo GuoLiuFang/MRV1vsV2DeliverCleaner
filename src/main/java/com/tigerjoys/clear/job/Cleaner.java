@@ -80,31 +80,32 @@ public class Cleaner {
 				if (objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID))) {
 					field_value = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID).getAsString();
 				}
-				//-----------
-			} else if (field.equals(Config.KNOWN_SOLUTION_ID)) {
-				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID)) ) {
-					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID).getAsString();
-				}
-				//-----------
-			} else if (field.equals(Config.KNOWN_SOLUTION)) {
-				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION)) ) {
-					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION).getAsString();
-				}
-				//-----------
-			} else if (field.equals(Config.VERSION)) {
-				if (objIsNull(root.getAsJsonObject().get(Config.VERSION)) ) {
-					field_value = root.getAsJsonObject().get(Config.VERSION).getAsString();
-				}
-				//-----------
 			} else if (field.equals(Config.TAG)) {
-				if (objIsNull(root.getAsJsonObject().get(Config.TAG)) ) {
-					if (objIsNull(root.getAsJsonObject().get(Config.TAG).getAsJsonObject().get(Config.TAG)) ) {
-						field_value = root.getAsJsonObject().get(Config.TAG).getAsJsonObject().get(Config.TAG).getAsString();
+				if (objIsNull(request_json.getAsJsonObject().get(Config.TAG)) ) {
+					if (request_json.getAsJsonObject().get(Config.TAG).isJsonObject()) {
+						field_value = request_json.getAsJsonObject().get(Config.TAG).getAsJsonObject().get(Config.TAG).getAsString();
 					}else {
-						field_value = root.getAsJsonObject().get(Config.TAG).getAsString();
+						field_value = request_json.getAsJsonObject().get(Config.TAG).getAsString();
 					}
 				}
 				//-----------
+			} else if (field.equals(Config.VERSION)) {
+				if (objIsNull(root.getAsJsonObject().get(Config.VERSION))) {
+					field_value = root.getAsJsonObject().get(Config.VERSION).getAsString();
+				}
+			} else if (field.equals(Config.KNOWN_SOLUTION_ID)) {
+				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID))) {
+					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION_ID).getAsString();
+				}
+			} else if (field.equals(Config.KNOWN_SOLUTION)) {
+				if (objIsNull(root.getAsJsonObject().get(Config.KNOWN_SOLUTION))) {
+					field_value = root.getAsJsonObject().get(Config.KNOWN_SOLUTION).getAsString();
+				}
+				
+			} else if (field.equals(Config.VM_ENABLE)) {
+				if (objIsNull(root.getAsJsonObject().get(Config.VM_ENABLE))) {
+					field_value = root.getAsJsonObject().get(Config.VM_ENABLE).getAsString();
+				}
 			} else if (field.equals(Config.LINUX_V)) {
 				if (objIsNull(request_json.getAsJsonObject().get(Config.LINUX_V))) {
 					String linux_v_n = request_json.getAsJsonObject().get(Config.LINUX_V).getAsString();
