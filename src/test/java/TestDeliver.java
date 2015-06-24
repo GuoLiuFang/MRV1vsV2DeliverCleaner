@@ -17,8 +17,8 @@
 //	
 //	@Test
 //	public void testFileSplitLine() throws IOException {
-////		FileReader reader = new FileReader("/Users/guoliufang/Downloads/combine2015-05-20.log");
-//		FileReader reader = new FileReader("/Users/guoliufang/Downloads/combine2015-05-22.log");
+//		FileReader reader = new FileReader("/Users/guoliufang/Downloads/combine2015-05-20.log");
+////		FileReader reader = new FileReader("/Users/guoliufang/Downloads/combine2015-05-22.log");
 ////		FileReader reader = new FileReader("/Users/guoliufang/Downloads/test.log");
 ////		FileReader reader = new FileReader("/Users/guoliufang/test.log");
 //		BufferedReader br = new BufferedReader(reader);

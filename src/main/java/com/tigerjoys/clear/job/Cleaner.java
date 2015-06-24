@@ -1,16 +1,22 @@
 package com.tigerjoys.clear.job;
 
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.tigerjoys.clear.config.Config;
 
 public class Cleaner {
 	private Logger logger = LogManager.getLogger();
+	private Gson gson = new Gson();
 
 	public String clean(String line) {
 		String result = "";
@@ -53,15 +59,28 @@ public class Cleaner {
 	}
 
 	private String getCombineTypeBackInfo(String back_segments) {
-//		back_segments = truncateString(back_segments);
-//		System.out.println(back_segments);
-//		back_segments = formateJsonString(back_segments);
-//		System.out.println(back_segments);
 		JsonElement root = new JsonParser().parse(back_segments);
-		String response = root.getAsJsonObject().get(Config.RESPONSE).toString();
-		JsonElement response_json = new JsonParser().parse(response);
-		String request = root.getAsJsonObject().get(Config.REQUEST).toString();
-		JsonElement request_json = new JsonParser().parse(request);
+		Map<String, Object> jsonMap = gson.fromJson(back_segments,new TypeToken<Map<String, Object>>() {}.getType());
+		JsonElement response_json = null;
+		JsonElement request_json = null;
+		if(jsonMap.containsKey(Config.RESPONSE)){
+			Object tmp = jsonMap.get(Config.RESPONSE);
+			if(tmp.toString().contains("{\"")){
+				response_json = new JsonParser().parse(tmp.toString());
+			}else{
+				String response = root.getAsJsonObject().get(Config.RESPONSE).toString();
+				response_json = new JsonParser().parse(response);
+			}
+		}	
+		if (jsonMap.containsKey(Config.REQUEST)) {
+			Object tmp = jsonMap.get(Config.REQUEST);
+			if(tmp.toString().contains("{\"") && !tmp.toString().contains("{\"tag")){
+				request_json = new JsonParser().parse(tmp.toString());
+			}else{
+				String request = root.getAsJsonObject().get(Config.REQUEST).toString();
+				request_json = new JsonParser().parse(request);
+			}
+		}
 		StringBuffer sb = new StringBuffer();
 		for (String field : Config.COMBINE_FIELDS) {
 			String field_value = "";
@@ -75,7 +94,6 @@ public class Cleaner {
 					solutionList = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
 				}
 				field_value = getSidAndSC(solutionList);
-				//---------
 			} else if (field.equals(Config.SID)) {
 				if (objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID))) {
 					field_value = response_json.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SID).getAsString();
@@ -88,7 +106,6 @@ public class Cleaner {
 						field_value = request_json.getAsJsonObject().get(Config.TAG).getAsString();
 					}
 				}
-				//-----------
 			} else if (field.equals(Config.VERSION)) {
 				if (objIsNull(root.getAsJsonObject().get(Config.VERSION))) {
 					field_value = root.getAsJsonObject().get(Config.VERSION).getAsString();
@@ -109,45 +126,16 @@ public class Cleaner {
 			} else if (field.equals(Config.LINUX_V)) {
 				if (objIsNull(request_json.getAsJsonObject().get(Config.LINUX_V))) {
 					String linux_v_n = request_json.getAsJsonObject().get(Config.LINUX_V).getAsString();
-//					String trim_linux_v = linux_v_n.trim();
 					field_value = removeEnterSignal(linux_v_n.trim());
 				}
 			} else {
-				if (objIsNull(request_json.getAsJsonObject().get(field))) {
+				if (request_json.getAsJsonObject().has(field)) {
 					field_value = request_json.getAsJsonObject().get(field).getAsString();
 				}
 			}
 			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
 		}//for--loop
 		return sb.substring(0,sb.length()-1);
-	}
-
-	private String truncateString(String back_segments) {
-		int index_devs_begin = back_segments.indexOf(Config.DEVS);
-		int index_devs_front_comma = back_segments.lastIndexOf(Config.COMMA, index_devs_begin);
-		int index_devs_back_bracket = back_segments.indexOf(Config.BRACKET, index_devs_begin);
-		int index_devs_back_comma = back_segments.indexOf(Config.COMMA, index_devs_back_bracket);
-		if (index_devs_begin > -1) {
-			back_segments = back_segments.substring(0, index_devs_front_comma) + back_segments.substring(index_devs_back_comma, back_segments.length());
-//			System.out.println(back_segments);
-		}
-//		int index_props_begin = back_segments.indexOf(Config.PROPS);
-//		int index_props_front_comma = back_segments.lastIndexOf(Config.COMMA, index_props_begin);
-//		int index_props_back_brace = back_segments.indexOf(Config.RIGHT_BRACE, index_props_begin);
-//		int index_props_back_comma = back_segments.indexOf(Config.COMMA, index_props_back_brace);
-//		if (index_props_begin > -1) {
-//			back_segments = back_segments.substring(0, index_props_front_comma) + back_segments.substring(index_props_back_comma, back_segments.length());
-//			System.out.println(back_segments);
-//		}
-		int index_ps_begin = back_segments.indexOf(Config.PS);//ps,]
-		int index_ps_front_comma = back_segments.lastIndexOf(Config.COMMA, index_ps_begin);
-		int index_ps_back_bracket = back_segments.indexOf(Config.BRACKET, index_ps_begin);
-		int index_ps_back_comma = back_segments.indexOf(Config.COMMA, index_ps_back_bracket);
-		if (index_ps_begin > -1) {
-			back_segments = back_segments.substring(0, index_ps_front_comma) + back_segments.substring(index_ps_back_comma, back_segments.length());
-//			System.out.println(back_segments);
-		}
-		return back_segments;
 	}
 
 	private String removeEnterSignal(String source) {
@@ -157,48 +145,6 @@ public class Cleaner {
 //			result = result.replaceAll(Config.SLASH, "");
 		}
 		return result;
-	}
-
-	private String formateJsonString(String source) {
-		source = source.replaceAll(Config.SLASH_QUOTE, Config.BACK_QUOTE);
-		source = source.replaceAll(Config.QUOTE_LEFT_BRACE, Config.LEFT_BRACE);
-		source = source.replaceAll(Config.RIGHT_BRACE_QUOTE_, Config.RIGHT_BRACE);
-		return source;
-	}
-
-	private String getOutTypeBackInfo(String back_segments) {
-		JsonElement root = new JsonParser().parse(back_segments);
-		StringBuffer sb = new StringBuffer();
-		for (String field : Config.OUT_FIELDS) {
-			String field_value = "";
-//			if (field.equals(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) {
-//				field_value = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsString();
-//			} else if (field.equals(Config.USERCAKE_OUT_1_OBJ12)) {
-//				field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsString();
-//			} else 
-			if (field.equals(Config.UID_OUT_2_OBJ12)) {
-				field_value = "";
-				if(objIsNull(root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12)) && objIsNull(root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12))){
-					field_value = root.getAsJsonObject().get(Config.USERCAKE_OUT_1_OBJ12).getAsJsonObject().get(Config.UID_OUT_2_OBJ12).getAsString();
-				}
-			} else if (field.equals(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY)) {
-//				JsonArray ja = new JsonArray();
-//				ja = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).getAsJsonArray();
-//				field_value = "" + ja.size();
-				String  solutionList = "";
-				if (objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11)) && objIsNull(root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY))) {
-					solutionList = root.getAsJsonObject().get(Config.SOLUTIONLISTCAKE_OUT_1_OBJ11).getAsJsonObject().get(Config.SOLUTIONLIST_OUT_2_OBJ11_ARRAY).toString();
-				}
-				field_value = getSidAndSC(solutionList);
-			} else {
-				if (objIsNull(root.getAsJsonObject().get(field))) {
-					field_value = root.getAsJsonObject().get(field).getAsString();
-				}
-			}
-			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
-		}//for--loop
-		String result = sb.toString();
-		return result.substring(0, result.length() - 1);
 	}
 
 	private String getSidAndSC(String solutionList) {
@@ -231,54 +177,6 @@ public class Cleaner {
 		return result;
 	}
 
-	private String getInTypeBackInfo(String back_segments) {
-		JsonElement root = new JsonParser().parse(back_segments);
-		StringBuffer sb = new StringBuffer();
-		// String value1 =
-		// root.getAsJsonObject().get("data").getAsJsonObject().get("field1").getAsString();
-		for (String field : Config.IN_FIELDS) {
-			String field_value = "";
-			if (field.equals(Config.APP_INFO_IN_1_OBJ10)) {
-				if(objIsNull(root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10))){
-					field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsString();
-				}
-			} else	if (field.equals(Config.LINUX_V)) {
-					if(objIsNull(root.getAsJsonObject().get(Config.LINUX_V))){
-						field_value = root.getAsJsonObject().get(Config.LINUX_V).getAsString();
-						field_value = field_value.replaceAll("\\n", "");
-					}
-//			} else if (field.equals(Config.FILE_2_OBJ11_OBJ20)) {
-//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).getAsString();
-//			} else if (field.equals(Config.PATH_IN_3_OBJ11_OBJ21)) {
-//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.FILE_2_OBJ11_OBJ20).getAsJsonObject().get(Config.PATH_IN_3_OBJ11_OBJ21).getAsString();
-//			} else if (field.equals(Config.HASH_2_OBJ12)) {
-//				field_value = root.getAsJsonObject().get(Config.APP_INFO_IN_1_OBJ10).getAsJsonObject().get(Config.HASH_2_OBJ12).getAsString();
-			} else if (field.equals(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY)) {
-//				JsonArray ja = new JsonArray();
-//				ja = root.getAsJsonObject().get(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY).getAsJsonArray();
-//				field_value = "" + ja.size();
-				if (objIsNull(root.getAsJsonObject().get(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY))) {
-					field_value = root.getAsJsonObject().get(Config.EXECUTED_SOLUTIONS_IN_1_ARRAY).getAsString();
-				}
-			} else if (field.equals(Config.DOWNLOAD_FILES_IN_1_ARRAY)) {
-//				JsonArray ja = new JsonArray();
-//				ja = root.getAsJsonObject().get(Config.DOWNLOAD_FILES_IN_1_ARRAY).getAsJsonArray();
-//				field_value = "" + ja.size();
-				if (objIsNull(root.getAsJsonObject().get(Config.DOWNLOAD_FILES_IN_1_ARRAY))) {
-					field_value = root.getAsJsonObject().get(Config.DOWNLOAD_FILES_IN_1_ARRAY).getAsString();
-				}
-			} else {
-				if (objIsNull(root.getAsJsonObject().get(field))) {
-					field_value = root.getAsJsonObject().get(field).getAsString();
-				}
-			}
-			sb.append(field_value).append(Config.DELIMEITER_V_BAR);
-		}//for--loop
-		String result = sb.toString();
-		return result.substring(0, result.length() - 1);
-	}
-	
-	
 	private boolean  objIsNull(Object obj){
 		if(obj!=null){
 			return true;
@@ -286,27 +184,6 @@ public class Cleaner {
 		return false;
 	}
 
-	private String getFrontInfo(String front_segments) {
-		StringBuffer sb = new StringBuffer();
-		String did = "";
-		String record_time = "";
-		String pid = "";
-		int did_index = front_segments.indexOf(Config.DID_QUOTE);
-		int end_index = front_segments.lastIndexOf(Config.BACK_QUOTE);
-		if(did_index > -1 && end_index > did_index + Config.DID_QUOTE.length()){
-			did = front_segments.substring(did_index + Config.DID_QUOTE.length(), end_index);
-		}else {
-			did_index = front_segments.length();
-		}
-		String	record_time_pid_string = front_segments.substring(0, did_index).trim();
-		String[] record_time_comma_pid = record_time_pid_string.split(Config.COMMA);
-		record_time = record_time_comma_pid[Config.RECORD_TIME_INDEX];
-		String millsecond_pid_string = record_time_comma_pid[Config.PID_INDEX];
-		String[] millsecond_pid = millsecond_pid_string.split(Config.SPACE);
-		pid = millsecond_pid[Config.PID_INDEX];
-		sb.append(did).append(Config.DELIMEITER_V_BAR).append(record_time).append(Config.DELIMEITER_V_BAR).append(pid);
-		return sb.toString();
-	}
 	private String getCombineTypeFrontInfo(String front_segments) {
 		StringBuffer sb = new StringBuffer();
 		String record_time = "";

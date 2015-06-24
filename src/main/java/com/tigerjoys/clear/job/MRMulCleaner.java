@@ -79,8 +79,7 @@ public class MRMulCleaner {
 			if (key.toString().equals(Config.COMBINE_COLON)) {
 				for (Text value : values) {
 					try {
-						mos.write(Config.COMBINE_LOG_OUTPUT_NAME,
-								NullWritable.get(), value);
+						mos.write(Config.COMBINE_LOG_OUTPUT_NAME, NullWritable.get(), value);
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
@@ -89,8 +88,7 @@ public class MRMulCleaner {
 			if (key.toString().equals("NULL")) {
 				for (Text value : values) {
 					try {
-						mos.write(Config.ERROR_LOG_OUTPUT_NAME,
-								NullWritable.get(), value);
+						mos.write(Config.ERROR_LOG_OUTPUT_NAME,	NullWritable.get(), value);
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
